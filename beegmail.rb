@@ -41,25 +41,9 @@ end
 main do
   gmail = GMailState.new state_path
   gmail.secret = secret['gmail']
+  gmail.logger = logger
 
-  new_ids = Hash[*({
-    inbox: 'INBOX',
-    all: '[Gmail]/All Mail',
-    sent: '[Gmail]/Sent Mail',
-    trash: '[Gmail]/Trash'
-  }.map do |k, v|
-    ids = gmail.new_ids(v)
-    info "#{ids.length} new messages in #{k}"
-    debug ids
-    [k, ids]
-  end).flatten(1)]
-
-  archived = new_ids[:all] - new_ids[:inbox] - new_ids[:sent]
-
-  info "#{archived.length} messages newly archived"
-  debug archived
-
-  processed = archived + new_ids[:trash]
+  processed = gmail.processed
 
   info "total #{processed.length} messages newly processed"
   debug processed
