@@ -1,12 +1,9 @@
 require 'net/imap/gmail'
 require 'yaml'
-require 'xdg'
-require 'wrong'
 
 class GMailState
-  include Wrong
-
-  def initialize
+  def initialize state_path
+    @state_path = state_path
     load_state
   end
 
@@ -27,6 +24,8 @@ class GMailState
 
     return result
   end
+
+  attr_accessor :secret
 
   private
 
@@ -51,18 +50,8 @@ class GMailState
     write_state
   end
 
-  def secret
-    return @secret if @secret
-
-    assert { File.exists? secret_path }
-    deny { File.world_readable? secret_path }
-    @secret = YAML.load File.read secret_path
-
-    return @secret
-  end
-
   def write_state
-    FileUtils.mkdir_p cache_path.parent
+    FileUtils.mkdir_p state_path.parent
     File.write state_path, YAML.dump(@state)
   end
 
@@ -72,11 +61,5 @@ class GMailState
     @state = {}
   end
 
-  def secret_path
-    XDG['CONFIG'].with_subdirectory('beegmail').to_path + 'secret.yml'
-  end
-
-  def state_path
-    XDG['CACHE'].with_subdirectory('beegmail').to_path + 'state.yml'
-  end
+  attr_reader :state_path
 end
