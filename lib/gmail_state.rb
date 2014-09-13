@@ -21,7 +21,7 @@ class GMailState
 
     newly_trashed = new_ids "[Gmail]/Trash"
     processed_by_rule = all_new - new_sent - new_draft - new_inbox
-    newly_archived = old_inbox - all_inbox
+    newly_archived = old_inbox - all_inbox - newly_trashed
 
     save_state 'INBOX', messages: all_inbox
 
