@@ -16,7 +16,7 @@ class GMailState
     new_draft = new_ids "[Gmail]/Drafts"
 
     all_inbox = inbox_ids
-    old_inbox = state['INBOX'][:messages] || []
+    old_inbox = state['INBOX'][:messages] || [] rescue []
     new_inbox = all_inbox - old_inbox
 
     newly_trashed = new_ids "[Gmail]/Trash"
