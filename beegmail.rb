@@ -17,7 +17,7 @@ include Methadone::CLILogging
 include Wrong
 
 def state_path
-  XDG['CACHE'].with_subdirectory('beegmail').to_path + 'state.yml'
+  XDG['DATA'].with_subdirectory('beegmail').to_path + 'state.yml'
 end
 
 def secret
