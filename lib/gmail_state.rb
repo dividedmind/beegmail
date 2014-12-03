@@ -99,7 +99,7 @@ class GMailState
   end
 
   def load_state
-    @state = YAML.load File.read state_path
+    @state = (YAML.load File.read(state_path)) || {}
   rescue
     @state = {}
   end
