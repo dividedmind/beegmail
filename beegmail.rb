@@ -51,6 +51,7 @@ main do
   unless processed.empty?
     bee.send 'gmail', processed.length
     info "successfully beeminded"
+    gmail.write_state
   end
 end
 

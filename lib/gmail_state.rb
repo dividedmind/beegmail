@@ -23,9 +23,14 @@ class GMailState
     processed_by_rule = all_new - new_sent - new_draft - new_inbox
     newly_archived = old_inbox - all_inbox - newly_trashed
 
-    save_state 'INBOX', messages: all_inbox
+    state['INBOX'] = { messages: all_inbox }
 
     newly_trashed + processed_by_rule + newly_archived
+  end
+
+  def write_state
+    FileUtils.mkdir_p state_path.parent
+    File.write state_path, YAML.dump(@state)
   end
 
   private
@@ -58,7 +63,7 @@ class GMailState
       result = gm_ids(mbox_state[:uidnext]...uidnext)
     end
 
-    save_state mailbox, uidvalidity: uidvalidity, uidnext: uidnext
+    state[mailbox] = { uidvalidity: uidvalidity, uidnext: uidnext }
 
     logger.info "#{result.length} new messages in #{mailbox}"
     logger.debug result
@@ -86,16 +91,6 @@ class GMailState
 
   def password
     secret['password']
-  end
-
-  def save_state mailbox, mbox_state
-    state[mailbox] = mbox_state
-    write_state
-  end
-
-  def write_state
-    FileUtils.mkdir_p state_path.parent
-    File.write state_path, YAML.dump(@state)
   end
 
   def load_state
